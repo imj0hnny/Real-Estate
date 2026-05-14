@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Johnny Knapp | Real Estate Advisor</title>
+    
+    <link rel="icon" type="image/jpg" href="https://i.postimg.cc/ncX3Kcp5/Facetune-30-03-2026-12-58-14.jpg">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/ncX3Kcp5/Facetune-30-03-2026-12-58-14.jpg">
+
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Montserrat:wght@200;300;400;500;600&family=Allison&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --text-main: #1a1a1a;
+            --text-muted: #8a837e;
+            --bg-champagne: #f7f3f0;
+            --bg-white: #ffffff;
+            --bg-stone-luxe: #e8e4e1;
+            --card-white: #ffffff;
+            --accent-charcoal: #222222;
+            --accent-hover: #444444;
+            --accent-gold-aesthetic: #c5a47e;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+
+        body { 
+            margin: 0; padding: 0; 
+            color: var(--text-main); 
+            font-family: 'Montserrat', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-champagne);
+            transition: background-color 1.2s cubic-bezier(0.45, 0, 0.55, 1);
+        }
+
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: var(--accent-charcoal);
+            z-index: 10002; width: 0%;
+        }
+
+        .nav-trigger {
+            position: fixed; top: 25px; right: 25px;
+            z-index: 10003; display: flex; align-items: center;
+            gap: 10px; padding: 10px 18px; background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(15px); border-radius: 30px;
+            font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s; font-family: 'Montserrat', sans-serif;
+            font-weight: 600; color: var(--accent-charcoal);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .nav-trigger:hover { background: #fff; transform: translateY(-2px); }
+
+        #full-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px); z-index: 10004;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            clip-path: circle(0% at 100% 0%); transition: 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        #full-nav.open { clip-path: circle(150% at 100% 0%); }
+        .nav-links { list-style: none; padding: 0; text-align: center; }
+        .nav-links li { margin: 20px 0; }
+        .nav-links a { font-family: 'Tenor Sans', sans-serif; font-size: clamp(1.6rem, 6vw, 3rem); text-decoration: none; color: var(--accent-charcoal); font-weight: 300; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent-gold-aesthetic); }
+
+        .main-wrapper { max-width: 1150px; margin: 0 auto; padding: 0 20px; }
+        section { width: 100%; position: relative; padding: 80px 0; }
+
+        .subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 5px; color: var(--text-muted); display: block; margin-bottom: 8px; font-weight: 400; }
+        .title { font-family: 'Tenor Sans', sans-serif; font-size: clamp(2.8rem, 10vw, 4.2rem); font-weight: 400; margin: 0; line-height: 0.95; }
+        .signature { font-family: 'Allison', cursive; font-size: clamp(5rem, 15vw, 6.5rem); margin-top: -30px; color: var(--accent-charcoal); }
+
+        .portrait-frame { position: relative; background: white; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); overflow: hidden; cursor: pointer; height: 100%; }
+        .overlay-content { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 20%, rgba(0, 0, 0, 0.7)); padding: 30px; display: flex; flex-direction: column; justify-content: flex-end; opacity: 0; transition: 0.5s ease; pointer-events: none; }
+        .portrait-frame:hover .overlay-content { opacity: 1; }
+        .overlay-text { font-family: 'Tenor Sans', sans-serif; font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.2; }
+        .overlay-tagline { font-family: 'Montserrat', sans-serif; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.7); margin-bottom: 5px; display: block; }
+
+        .bio-text a { color: var(--accent-charcoal); text-decoration: none; font-weight: 600; border-bottom: 1px solid #ddd; transition: 0.3s; }
+        .bio-text a:hover { color: var(--accent-gold-aesthetic); border-bottom-color: var(--accent-gold-aesthetic); }
+
+        .connect-bento { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; max-width: 1000px; margin: 0 auto; }
+        .contact-card { background: var(--card-white); padding: 50px 40px; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.08); position: relative; border: 1px solid rgba(0,0,0,0.02); }
+        .section-header { font-family: 'Tenor Sans', sans-serif; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 30px; display: block; text-align: center; color: var(--text-main); }
+        .contact-item { display: flex; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid #f9f7f6; text-decoration: none; color: var(--text-main); font-size: 0.75rem; transition: 0.3s; font-family: 'Montserrat', sans-serif; }
+        .contact-item span:first-child { text-transform: uppercase; font-size: 0.55rem; letter-spacing: 3px; color: var(--text-muted); }
+        .contact-item:hover { padding-left: 8px; border-bottom-color: var(--accent-charcoal); }
+        
+        .vcard-btn, .salon-btn { display: block; background: var(--accent-charcoal); color: #fff; text-align: center; padding: 18px; text-decoration: none; font-size: 0.65rem; letter-spacing: 4px; font-weight: 600; transition: 0.4s ease; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
+        .vcard-btn:hover, .salon-btn:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .socials-link { display: block; margin-top: 15px; background: transparent; color: var(--accent-charcoal); text-align: center; padding: 15px; text-decoration: none; font-size: 0.65rem; letter-spacing: 4px; font-weight: 600; border: 1px solid #ddd; border-radius: 30px; transition: all 0.3s ease; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
+        .socials-link:hover { background: var(--accent-charcoal); color: #fff; border-color: var(--accent-charcoal); }
+
+        .phone-portfolio-container { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 0; }
+        .thin-phone-frame { position: relative; width: 260px; aspect-ratio: 9 / 19.5; border: 2px solid #1a1a1c; border-radius: 40px; background-color: #000; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12); overflow: hidden; }
+        .island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 70px; height: 18px; background: #000; border-radius: 20px; z-index: 10; }
+        .phone-image { width: 100%; height: 100%; position: absolute; top: 0; left: 0; object-fit: cover; opacity: 0; transition: opacity 0.6s ease-in-out; }
+        .phone-image.active { opacity: 1; }
+        .phone-link-overlay { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 80%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px; text-align: center; text-decoration: none; z-index: 20; transition: 0.3s ease; }
+        .phone-link-overlay span { color: #fff; font-family: 'Montserrat'; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; }
+
+        .portfolio-carousel { width: 100%; max-width: 450px; position: relative; overflow: hidden; border: 8px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .carousel-track { display: flex; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
+        .carousel-slide { min-width: 100%; }
+        .portfolio-carousel img { width: 100%; height: 320px; object-fit: cover; display: block; }
+        .carousel-heading { font-family: 'Tenor Sans', sans-serif; text-transform: uppercase; letter-spacing: 5px; font-size: 0.75rem; margin-bottom: 20px; display: inline-block; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+
+        .picks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .pick-item { text-decoration: none; color: inherit; padding: 12px; border: 1px solid #e0e0e0; background-color: white; transition: 0.3s; font-family: 'Montserrat', sans-serif; }
+        .pick-item:hover { background: var(--accent-charcoal); color: white; transform: translateY(-2px); }
+        .pick-item p { margin: 0; font-weight: 600; font-size: 0.8rem; }
+
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 999; opacity: 0; transition: 0.4s; }
+
+        @media (min-width: 950px) {
+            .hero-container, .community-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; }
+            .contact-sidebar, .portrait-container, .community-sidebar { display: block !important; position: sticky; top: 60px; height: fit-content; }
+            #mobile-portrait-wrapper, #mobile-community-wrapper { display: none !important; }
+            .local-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+            .bio-text p { font-size: 0.9rem; line-height: 1.8; margin-bottom: 20px; }
+            
+            .salon-grid { 
+                display: grid; 
+                grid-template-columns: 1fr 1fr; 
+                gap: 80px; 
+                align-items: center; 
+                justify-content: center;
+            }
+            .salon-info-column {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .salon-words-wrapper {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 949px) {
+            section { padding: 40px 0; text-align: center; }
+            .main-wrapper { padding: 0; width: 100%; }
+            .bio-text p { font-size: 0.85rem; padding: 0 30px; line-height: 1.8; margin-bottom: 20px; font-weight: 300; }
+            .picks-grid { display: flex; overflow-x: auto; padding: 10px 25px 25px 25px; gap: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+            .picks-grid::-webkit-scrollbar { display: none; }
+            .pick-item { flex: 0 0 150px; scroll-snap-align: start; background: #fff; border: none; border-radius: 15px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); padding: 15px 10px; }
+            #mobile-portrait-wrapper { display: block !important; margin: 0 auto 25px auto; width: 130px; height: 130px; border-radius: 50%; overflow: hidden; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+            #mobile-portrait-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+            #mobile-community-wrapper { display: block !important; margin: 0 auto 30px auto; width: 65%; }
+            #mobile-community-wrapper .portrait-frame { border-radius: 20px; padding: 8px; }
+            .connect-bento { display: flex; flex-direction: column; width: 100%; padding: 0; }
+            .contact-card { width: 100% !important; margin: -30px auto 0 auto !important; border-radius: 25px 25px 0 0; box-shadow: 0 -15px 40px rgba(0,0,0,0.06); padding: 40px 20px; }
+            .contact-item { font-size: 0.7rem; }
+            .contact-sidebar, .portrait-container, .community-sidebar { display: none !important; }
+            .vcard-btn, .salon-btn { border-radius: 12px; margin: 0 5px; }
+            .portfolio-carousel { border-radius: 15px; width: 90%; margin: 0 auto; border: 5px solid #fff; }
+            .nav-trigger { top: 15px; right: 15px; padding: 8px 14px; border-radius: 20px; }
+            #warmRegards { margin-top: 20px !important; }
+        }
+    </style>
+</head>
+<body id="top">
+
+<div id="scroll-progress"></div>
+<div id="nav-btn" class="nav-trigger" onclick="toggleNav()">
+    <span>Menu</span>
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1h16M1 6h16M1 11h16"/></svg>
+</div>
+
+<nav id="full-nav">
+    <ul class="nav-links">
+        <li><a href="#top" onclick="toggleNav()">Biography</a></li>
+        <li><a href="#we-are-home" onclick="toggleNav()">We are home®</a></li>
+        <li><a href="javascript:void(0)" onclick="scrollToConnect()">Connect</a></li>
+        <li><a href="#salon-section" onclick="toggleNav()">Salon Inquiry</a></li>
+        <li><a href="#community-section" onclick="toggleNav()">Community</a></li>
+        <li><a href="#local-section" onclick="toggleNav()">The Edits</a></li>
+    </ul>
+</nav>
+
+<a href="#top" class="back-to-top" id="backToTop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg></a>
+
+<section id="bio-section" data-bg="var(--bg-champagne)">
+    <div class="main-wrapper">
+        <div class="hero-container">
+            <div class="bio-text-wrapper">
+                <span class="subtitle">Real Estate Advisor</span>
+                <h1 class="title">Johnny Knapp</h1>
+                <span class="subtitle" style="letter-spacing: 2px; font-weight: 500; margin-top: 12px; color: #bca07a; font-size: 0.75rem; text-shadow: 0 1px 1px rgba(0,0,0,0.02);">Howard Hanna Allen Tate Real Estate</span>
+                
+                <div class="top-quote" style="margin-top: 30px;">
+                    <p style="font-family: 'Tenor Sans', sans-serif; font-size: 1.4rem; line-height: 1.3; margin-bottom: 10px;">"Don’t just dream it, own it."</p>
+                    <p style="font-size: 0.9rem;">"Expert guidance for every square foot of your journey."</p>
+                </div>
+                
+                <div id="mobile-portrait-wrapper">
+                    <img src="https://i.postimg.cc/x1Bcqck7/Facetune-23-03-2026-15-25-53.jpg">
+                </div>
+
+                <div class="bio-text">
+                    <p>Securing a home is a monumental milestone that defines your everyday life, so we better make sure it's a masterpiece. It requires a vision, a deep level of trust, and a professional who won’t let you make a tragic mistake. As a Premier Real Estate Agent and a Master Hair Stylist (scroll to “Salon Inquiry” section), I’m that rare partner who can negotiate a killer closing credit and tell you exactly which shade of paint will make your foyer (and your skin tone) pop.</p>
+                    <p>I’m a North Carolina coastal native who brought my salt-water soul to North Hills, where I live with my partner, Hunter, and our two honorary <strong>"branch managers,"</strong> Blayden and Brody (our very spoiled puppies). I’m a total beach bum at heart, and when I’m not obsessing over floor plans, you’ll find me jumping waves at the coast or back in town with a bone-dry martini in hand, ready to gab and find the laughter in everything.</p>
+                    <p><strong>Why work with me?</strong> I’m a perfectionist who actually enjoys the challenging side of a transaction. I’ll handle the gritty negotiations, the fine-print headaches, and the stressful logistics so you can focus on the fun stuff—like where the bar cart goes. I’m kind, I’m hardworking, and I’m your biggest cheerleader. When you win, we win together, and we’re going to have a blast getting there!</p>
+                    <p>I believe life is too short for boring houses, bad hair, or high-stress agents. I’m here to make your closing process as pleasant and refreshing as a salon day. Let’s get to work and find you the dream home (and the dream hair) you deserve!</p>
+                    <div class="signature">Johnny</div>
+                </div>
+            </div>
+
+            <div class="contact-sidebar">
+                <div class="portrait-frame">
+                    <img src="https://i.postimg.cc/B6WDLQth/Johnny_Knapp_Headshot.jpg" style="width:100%">
+                    <div class="overlay-content">
+                        <span class="overlay-tagline">At your assistance.</span>
+                        <p class="overlay-text">Hi! I'm Johnny!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="we-are-home" data-bg="var(--bg-white)" style="background-color: #ffffff; padding: 100px 0;">
+    <div class="main-wrapper" style="max-width: 1000px; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+            <h2 style="font-family: 'Tenor Sans', sans-serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 400; margin: 0; letter-spacing: 2px;">We are home.®</h2>
+            <img src="https://i.postimg.cc/T1SJCgLM/HH-monogram-wordworks-HH-AT-Full-Logo-Emerald.png" alt="Howard Hanna Allen Tate Logo" style="max-height: clamp(50px, 8vw, 80px); width: auto; object-fit: contain;">
+        </div>
+        
+        <div style="max-width: 850px; margin: 0 auto; padding: 0 20px;">
+            <a href="https://www.allentate.com/" target="_blank" style="text-decoration: none; display: inline-block; transition: 0.3s;">
+                <p style="font-family: 'Tenor Sans', sans-serif; font-size: 1.3rem; line-height: 1.6; margin-bottom: 40px; color: var(--accent-charcoal); letter-spacing: 1px;">
+                    We are real estate, we are mortgage, we are insurance, we are community.
+                </p>
+            </a>
+            
+            <div style="height: 1px; width: 80px; background: var(--accent-gold-aesthetic); margin: 0 auto 40px auto;"></div>
+            
+            <p style="font-size: 0.95rem; line-height: 1.9; color: var(--text-main); margin-bottom: 25px; font-weight: 300; text-align: justify; text-align-last: center;">
+                Our company exists to provide and protect quality of life for our community. We do this by providing services and support to homeowners throughout the entire homeownership cycle—whether that’s helping people buy or sell a home, obtain or refinance a mortgage, find the best insurance plan to protect their family and valuables, or relocate to a new area, we can help.
+            </p>
+            
+            <p style="font-size: 0.95rem; line-height: 1.9; color: var(--text-main); font-weight: 300; text-align: justify; text-align-last: center;">
+                We’re number 1 in the Carolinas; and as a trusted name in the Carolinas for 60 years, our results speak for themselves. Choosing a Howard Hanna Allen Tate representative means you’ll be in good hands. Additionally, our network extends far beyond the Carolinas, as our affiliation with The Leading Real Estate Companies of the World allows us to help you find a home anywhere in the world.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section id="connect-section" data-bg="var(--bg-stone-luxe)">
+    <div class="main-wrapper">
+        <div class="connect-bento">
+            <div class="portrait-container">
+                <div class="portrait-frame">
+                    <img src="https://i.postimg.cc/ncX3Kcp5/Facetune-30-03-2026-12-58-14.jpg" style="width:100%; height:100%; object-fit:cover;">
+                    <div class="overlay-content">
+                        <span class="overlay-tagline">Connect today.</span>
+                        <p class="overlay-text">Partnership begins<br>with communication.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="work-with-me-box" class="contact-card">
+                <span class="section-header">Work With Me</span>
+                <a href="javascript:void(0)" onclick="downloadVCF()" class="vcard-btn">SAVE CONTACT</a>
+                <a href="tel:9843358772" class="contact-item"><span>Voice</span><span>984.335.8772</span></a>
+                <a href="sms:19843358772" class="contact-item"><span>Mobile</span><span style="font-weight:600">Text Johnny</span></a>
+                <a href="mailto:johnny.knapp@allentate.com" class="contact-item"><span>Inquiry</span><span>Email Johnny</span></a>
+                <a href="https://www.instagram.com/imj0hnny/" target="_blank" class="socials-link">View Socials</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="salon-section" data-bg="var(--bg-white)">
+    <div class="main-wrapper">
+        <div class="salon-grid">
+            <div class="salon-info-column">
+                <div class="salon-info-header">
+                    <span class="section-header">Salon Inquiry</span>
+                    <h2 style="font-family:'Tenor Sans'; letter-spacing:8px; font-weight:300; margin-bottom: 30px;">The Master Artist</h2>
+                </div>
+                <div class="salon-words-wrapper">
+                    <p style="font-family:'Tenor Sans'; font-size:1.4rem; margin-bottom: 20px;">"Life's too short for bad houses or bad hair."</p>
+                    <p style="font-weight:300; line-height:1.8; color:var(--text-muted); margin-bottom: 40px;">With nearly a decade of experience as a Master Stylist, I bring the same technical precision and eye for aesthetic detail to your hair as I do to your home.</p>
+                </div>
+                <div class="salon-actions">
+                    <a href="https://salonbluhair.com/brier-creek" target="_blank" class="salon-btn" style="min-width: 250px;">BOOK APPOINTMENT</a>
+                    <p id="warmRegards" class="signature" style="margin-top: 20px;">Warm regards!</p>
+                </div>
+            </div>
+            <div class="salon-portfolio">
+                <div class="phone-portfolio-container">
+                    <h4 class="carousel-heading" style="margin: 0 auto 20px auto; display: block; width: fit-content;">View My Work</h4>
+                    <div class="thin-phone-frame">
+                        <div class="island"></div>
+                        <a href="https://www.instagram.com/imj0hnny/" target="_blank" class="phone-link-overlay">
+                            <span>Visit Instagram</span>
+                        </a>
+                        <div class="screen-content" id="phonePortfolio">
+                            <img class="phone-image active" src="https://i.postimg.cc/638LKLw6/IMG_0558_2.jpg">
+                            <img class="phone-image" src="https://i.postimg.cc/zvWCbzVw/IMG_0559.jpg">
+                            <img class="phone-image" src="https://i.postimg.cc/rytCYJQN/IMG_0563_2.jpg">
+                            <img class="phone-image" src="https://i.postimg.cc/PrszGw7T/IMG_0564_2.jpg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="community-section" data-bg="var(--bg-stone-luxe)">
+    <div class="main-wrapper">
+        <div class="community-grid">
+            <div class="community-text-wrapper">
+                <span class="subtitle">Community Involvement</span>
+                <h2 class="title" style="margin-bottom: 20px;">Where We Belong</h2>
+                <div id="mobile-community-wrapper">
+                    <div class="portrait-frame"><img src="https://i.postimg.cc/VNVjLGYb/IMG_0569_2.jpg" style="width:100%"></div>
+                </div>
+                <div class="bio-text">
+                    <p>With a career built on education and community, I thrive on helping others reach their full potential. My journey in the beauty industry led me to serve as a <a href="https://www.redken.com/meet-the-redken-brand-ambassadors.html" target="_blank">National Redken Ambassador</a>, and I continue that legacy today as a local Redken Educator in my salon, mentoring stylists and sharing the latest industry innovations.</p>
+                    <p>Beyond the salon, I am a dedicated member of the <a href="https://www.rrar.com/about" target="_blank">REALTOR® Association</a>, where we guide clients through the life-changing process of realizing the dream of homeownership. Whether we’re empowering professionals or helping a family find their forever home, our focus remains the same: providing expert guidance and fostering growth.</p>
+                    <p>When I’m not working, you can find me staying active and connected with my local community at <a href="https://www.crunch.com/locations/creedmoor" target="_blank">Crunch Fitness</a>!</p>
+                </div>
+            </div>
+            <div class="community-sidebar">
+                <div class="portrait-frame">
+                    <img src="https://i.postimg.cc/VNVjLGYb/IMG_0569_2.jpg" style="width:100%">
+                    <div class="overlay-content">
+                        <span class="overlay-tagline">Making a difference.</span>
+                        <p class="overlay-text">Dedicated to<br>community & growth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="local-section" data-bg="var(--bg-white)">
+    <div class="main-wrapper">
+        <div class="local-grid">
+            <div class="local-picks">
+                <span class="subtitle">Local Favorites</span>
+                <h3 style="font-family: 'Tenor Sans'; font-weight: 400; font-size: 1.4rem;">The North Hills Edit</h3>
+                <div class="picks-grid">
+                    <a href="https://rh.com/us/en/raleigh/restaurant" target="_blank" class="pick-item"><span>Rooftop Views</span><p>RH Rooftop</p></a>
+                    <a href="https://www.villagetavern.com/" target="_blank" class="pick-item"><span>Classic Fare</span><p>Village Tavern</p></a>
+                    <a href="https://www.altardstate.com/?gad_source=1" target="_blank" class="pick-item"><span>Retail Therapy</span><p>Altar'd State</p></a>
+                    <a href="https://foxcroftwine.com/pages/raleigh" target="_blank" class="pick-item"><span>Sommelier Picks</span><p>Foxcroft</p></a>
+                </div>
+            </div>
+            <div class="local-carousel-container" style="margin-top: 30px;">
+                <h4 class="carousel-heading">NH Favorites</h4>
+                <div class="portfolio-carousel" id="nhCarousel">
+                    <div class="carousel-track">
+                        <div class="carousel-slide"><a href="https://rh.com/us/en/raleigh/restaurant" target="_blank"><img src="https://i.postimg.cc/9QzkxkNT/Screenshot-2026-04-05-at-2-33-46-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://www.villagetavern.com/" target="_blank"><img src="https://i.postimg.cc/qMvDRYr2/Screenshot-2026-04-05-at-2-36-23-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://www.altardstate.com/?gad_source=1" target="_blank"><img src="https://i.postimg.cc/ZRmVhsjx/Screenshot-2026-04-05-at-2-38-35-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://foxcroftwine.com/pages/raleigh" target="_blank"><img src="https://i.postimg.cc/cC9mwxWm/Screenshot-2026-04-05-at-2-40-18-PM.png"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="raleigh-section" data-bg="var(--bg-stone-luxe)">
+    <div class="main-wrapper">
+        <div class="local-grid">
+            <div class="local-picks">
+                <span class="subtitle">City Favorites</span>
+                <h3 style="font-family: 'Tenor Sans'; font-weight: 400; font-size: 1.4rem;">The Raleigh Edit</h3>
+                <div class="picks-grid">
+                    <a href="https://www.thewillardraleigh.com/" target="_blank" class="pick-item"><span>Rooftop Lounge</span><p>The Willard</p></a>
+                    <a href="https://laterrazzaraleigh.com/" target="_blank" class="pick-item"><span>Aperitivo</span><p>La Terrazza</p></a>
+                    <a href="https://raleighparks.org/2011/06/01/lassiter-mill-park/" target="_blank" class="pick-item"><span>For the Pups</span><p>Lassiter Mill</p></a>
+                    <a href="https://www.o-kusushi.com/location/o-ku-raleigh/" target="_blank" class="pick-item"><span>Sushi Art</span><p>O-Ku Sushi</p></a>
+                </div>
+            </div>
+            <div class="local-carousel-container" style="margin-top: 30px;">
+                <h4 class="carousel-heading">Raleigh Favorites</h4>
+                <div class="portfolio-carousel" id="ralCarousel">
+                    <div class="carousel-track">
+                        <div class="carousel-slide"><a href="https://www.thewillardraleigh.com/" target="_blank"><img src="https://i.postimg.cc/8zBRmCP6/Screenshot-2026-03-31-at-10-56-29-AM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://laterrazzaraleigh.com/" target="_blank"><img src="https://i.postimg.cc/VsVDSzWz/Screenshot-2026-03-31-at-10-59-41-AM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://raleighparks.org/2011/06/01/lassiter-mill-park/" target="_blank"><img src="https://i.postimg.cc/hGv04wQf/Screenshot-2026-03-31-at-11-00-41-AM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://www.o-kusushi.com/location/o-ku-raleigh/" target="_blank"><img src="https://i.postimg.cc/Vsgzrdrz/Screenshot-2026-04-05-at-2-53-15-PM.png"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="durham-section" data-bg="var(--bg-white)">
+    <div class="main-wrapper">
+        <div class="local-grid">
+            <div class="local-picks">
+                <span class="subtitle">Durham Gems</span>
+                <h3 style="font-family: 'Tenor Sans'; font-weight: 400; font-size: 1.4rem;">The Durham Edit</h3>
+                <div class="picks-grid">
+                    <a href="https://www.thelenny555.com/" target="_blank" class="pick-item"><span>Date Night</span><p>Lenny 555</p></a>
+                    <a href="https://gotickets.com/venues/durham-performing-arts-center?venue=38" target="_blank" class="pick-item"><span>Showtime</span><p>DPAC</p></a>
+                    <a href="https://www.velvethippodurham.com/" target="_blank" class="pick-item"><span>Rooftop Sips</span><p>Velvet Hippo</p></a>
+                    <a href="https://gardens.duke.edu/" target="_blank" class="pick-item"><span>Nature Walk</span><p>Duke Gardens</p></a>
+                </div>
+            </div>
+            <div class="local-carousel-container" style="margin-top: 30px;">
+                <h4 class="carousel-heading">Durham Favorites</h4>
+                <div class="portfolio-carousel" id="durCarousel">
+                    <div class="carousel-track">
+                        <div class="carousel-slide"><a href="https://www.thelenny555.com/" target="_blank"><img src="https://i.postimg.cc/PqMdWx3S/Screenshot-2026-04-05-at-3-01-20-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://gotickets.com/venues/durham-performing-arts-center?venue=38" target="_blank"><img src="https://i.postimg.cc/VknfN4XG/Screenshot-2026-04-05-at-3-03-14-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://www.velvethippodurham.com/" target="_blank"><img src="https://i.postimg.cc/TYy2zTw7/Screenshot-2026-04-05-at-3-03-34-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://gardens.duke.edu/" target="_blank"><img src="https://i.postimg.cc/SRRQNhGj/Screenshot-2026-04-05-at-3-05-17-PM.png"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="beach-section" data-bg="var(--bg-stone-luxe)">
+    <div class="main-wrapper">
+        <div class="local-grid">
+            <div class="local-picks">
+                <span class="subtitle">Coastal Soul</span>
+                <h3 style="font-family: 'Tenor Sans'; font-weight: 400; font-size: 1.4rem;">The Carolina Beach Edit</h3>
+                <div class="picks-grid">
+                    <a href="https://www.oceangrilltiki.com/" target="_blank" class="pick-item"><span>Island Vibes</span><p>Ocean Grill</p></a>
+                    <a href="https://seawitchtikibar.com/" target="_blank" class="pick-item"><span>Local Legend</span><p>Sea Witch</p></a>
+                    <a href="https://carolinabeachpier.com/" target="_blank" class="pick-item"><span>Pier Views</span><p>CB Pier</p></a>
+                    <a href="https://sunnydazecb.com/" target="_blank" class="pick-item"><span>Coastal BBQ</span><p>Sunny Daze</p></a>
+                </div>
+            </div>
+            <div class="local-carousel-container" style="margin-top: 30px;">
+                <h4 class="carousel-heading">CB Favorites</h4>
+                <div class="portfolio-carousel" id="beachCarousel">
+                    <div class="carousel-track">
+                        <div class="carousel-slide"><a href="https://www.oceangrilltiki.com/" target="_blank"><img src="https://i.postimg.cc/XJHGgxHF/Screenshot-2026-04-05-at-3-12-43-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://seawitchtikibar.com/" target="_blank"><img src="https://i.postimg.cc/SNz2W6Wr/Screenshot-2026-04-05-at-3-13-54-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://carolinabeachpier.com/" target="_blank"><img src="https://i.postimg.cc/R0GNMXB4/Screenshot-2026-04-05-at-3-14-20-PM.png"></a></div>
+                        <div class="carousel-slide"><a href="https://sunnydazecb.com/" target="_blank"><img src="https://i.postimg.cc/G3PhrXJv/Screenshot-2026-04-05-at-3-22-55-PM.png"></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const nav = document.getElementById('full-nav');
+    function toggleNav() { nav.classList.toggle('open'); }
+
+    function scrollToConnect() {
+        if(nav.classList.contains('open')) toggleNav();
+        document.getElementById('work-with-me-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function downloadVCF() {
+        const vcfData = ['BEGIN:VCARD','VERSION:3.0','FN:Johnny Knapp','TEL;TYPE=CELL:9843358772','EMAIL:johnny.knapp@allentate.com','END:VCARD'].join('\n');
+        const blob = new Blob([vcfData], { type: 'text/vcard' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'Johnny_Knapp.vcf'; a.click();
+    }
+
+    window.addEventListener('scroll', function() {
+        const h = document.documentElement, b = document.body;
+        const percent = (h.scrollTop||b.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+        document.getElementById('scroll-progress').style.width = percent + "%";
+        const btn = document.getElementById('backToTop');
+        btn.style.opacity = window.pageYOffset > 500 ? "1" : "0";
+        
+        document.querySelectorAll('section').forEach(section => {
+            const scrollPos = window.pageYOffset + (window.innerHeight / 2);
+            if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                const varName = section.getAttribute('data-bg').replace('var(', '').replace(')', '');
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+                document.body.style.backgroundColor = bgColor;
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        function startCarousel(id, slides, speed) {
+            let index = 0;
+            const track = document.querySelector(`#${id} .carousel-track`);
+            if (!track) return;
+            setInterval(() => {
+                index++;
+                track.style.transform = `translateX(-${(index % slides) * 100}%)`;
+            }, speed);
+        }
+
+        startCarousel('nhCarousel', 4, 2500);
+        startCarousel('ralCarousel', 4, 2700);
+        startCarousel('durCarousel', 4, 2900);
+        startCarousel('beachCarousel', 4, 3100);
+
+        let phoneIndex = 0;
+        const phoneImages = document.querySelectorAll('#phonePortfolio .phone-image');
+        setInterval(() => {
+            if(phoneImages.length > 0) {
+                phoneImages[phoneIndex].classList.remove('active');
+                phoneIndex = (phoneIndex + 1) % phoneImages.length;
+                phoneImages[phoneIndex].classList.add('active');
+            }
+        }, 2000);
+    });
+</script>
+
+</body>
+</html>
